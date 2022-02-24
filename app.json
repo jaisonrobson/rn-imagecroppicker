@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "rn-imagecroppicker",
+    "slug": "rn-imagecroppicker",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "rn-imagecroppicker"
+}
