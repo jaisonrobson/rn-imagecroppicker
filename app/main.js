@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
-import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from 'react-native-image-crop-picker'
 
 const Main = () => {
     const [image, setImage] = useState({})
     const [errorText, setErrorText] = useState("")
 
-    const onSucessfulCropImage = (resultImage) => {
-        console.log('resultImage', resultImage)
-        setImage(resultImage)
-        setErrorText("")
-    }
+    const onSuccessfulGetImage = (resultImage) => adjustActualPhoto(resultImage)
 
-    const onFailCropImage = () => {
+    const onFailGetImage = () => {
         setImage({})
         setErrorText("Falha ao carregar imagem.")
+    }
+
+    const onSuccessfulCropImage = (resultImage) => {
+        setImage(resultImage)
+        setErrorText("")
     }
 
     const getImageFromPath = () => {
@@ -37,7 +38,29 @@ const Main = () => {
         return {}
     }
 
+    const takePicture = () => {
+        ImagePicker.openCamera({
+            width: 600,
+            height: 600,
+            cropping: false,
+        }).then(onSuccessfulGetImage, onFailGetImage)
+    }
 
+    const chooseFromGallery = () => {
+        ImagePicker.openPicker({
+            width: 600,
+            height: 600,
+            cropping: false,
+        }).then(onSuccessfulGetImage, onFailGetImage)
+    }
+
+    const adjustActualPhoto = (imageParam) => {
+        ImagePicker.openCropper({
+            path: imageParam.path,
+            width: 600,
+            height: 600,
+        }).then(onSuccessfulCropImage)
+    }
 
     return (
         <View
@@ -52,22 +75,14 @@ const Main = () => {
 
             <TouchableOpacity
                 style={styles.cropImageButton}
-                onPress={() => ImagePicker.openPicker({
-                    width: 600,
-                    height: 600,
-                    cropping: true,
-                }).then(onSucessfulCropImage, onFailCropImage)}
+                onPress={chooseFromGallery}
             >
                 <Text>Escolher imagem</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
                 style={styles.cropImageButton}
-                onPress={() => ImagePicker.openCamera({
-                    width: 600,
-                    height: 600,
-                    cropping: true,
-                }).then(onSucessfulCropImage, onFailCropImage)}
+                onPress={takePicture}
             >
                 <Text>Tirar foto</Text>
             </TouchableOpacity>
@@ -79,7 +94,6 @@ const Main = () => {
                     )
                     : undefined
             }
-
         </View>
     )
 }
